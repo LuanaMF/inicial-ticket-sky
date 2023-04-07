@@ -1,8 +1,8 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import mysql from 'mysql2/promise'
+import mysql from 'mysql2/promise' 
 
-
+// retorno
 type Data = {
   success: boolean
 }
@@ -11,12 +11,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  // Parse the request body to get the data to insert
+
+  // Recupera informações da requisição
   const name = req.body.name
   const email = req.body.email
   const password = req.body.password
 
-  // Create a MySQL connection pool
+  // Cria conexão com o banco
   const pool = mysql.createPool({
     host: 'localhost',  
     user: 'root',
@@ -28,17 +29,18 @@ export default async function handler(
   })
 
   try {
-    // Execute the SQL query to insert the data
+    // executa o sql para inserir
     await pool.query('INSERT INTO users SET ?', { name, email, password })
 
-    // Send a success response
+    // manda retorno (sucesso)
     res.status(200).json({ success: true })
   } catch (error) {
-    // Handle errors and send an error response
+     
     console.error(error)
+    // manda retorno (erro)
     res.status(500).json({ success: false })
   } finally {
-    // Release the connection from the pool
+    // finaliza conexão
     pool.end()
   }
 }

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import mysql, { RowDataPacket } from 'mysql2/promise'
 
+// constroi o "tipo" pq typescript É CHATO PRA CARALHO
 type User = {
   id: number
   name: string
@@ -12,7 +13,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<User[]>
 ) {
-  // Create a MySQL connection pool
+
+  // Conexão com o banco
   const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
@@ -24,10 +26,10 @@ export default async function handler(
   })
 
   try {
-    // Execute the SQL query to get all users
+    // executa sql no banco
     const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM users')
 
-    // Map over the rows and extract the values for each field
+    // percorre e extrai resultado (users)
     const users = rows.map((row) => ({
       id: row.id,
       name: row.name,
@@ -35,10 +37,10 @@ export default async function handler(
       password: row.password
     }))
 
-    // Send the array of users as a response
+    // manda o retorno (lista de users)
     res.status(200).json(users)
   } catch (error) {
-    // Handle errors and send an error response
+    
     console.error(error)
     res
   }
